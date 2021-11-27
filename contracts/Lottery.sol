@@ -13,12 +13,13 @@ contract Lottery is Ownable, VRFConsumerBase {
     }
 
     address payable[] public players;
+    address payable public recentWinner;
+    uint256 public randomness;
     uint256 public usdEntryFee;
     AggregatorV3Interface internal ethUsdPriceFeed;
     LOTTERY_STATE public lottery_state;
     uint256 public fee;
     bytes32 public keyhash;
-    address public recentWinner;
 
     constructor(
         address _priceFeedAddress,
@@ -89,5 +90,10 @@ contract Lottery is Ownable, VRFConsumerBase {
         // 22
         // 22 % 7 = 1
         // 7 
+        recentWinner.transfer(address(this).balance);
+        // RESET
+        players = new address payable[](0);
+        lottery_state = LOTTERY_STATE.CLOSED;
+        randomness = _randomness;
     }
 }
